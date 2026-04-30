@@ -8,16 +8,11 @@ const {
   deleteJob
 } = require("../controllers/jobController");
 
-// CREATE JOB
+// IMPORTANT: NO () after functions
+
 router.post("/add", addJob);
-
-// GET ALL JOBS
 router.get("/", getJobs);
-
-// UPDATE JOB
 router.put("/:id", updateJob);
-
-// DELETE JOB
 router.delete("/:id", deleteJob);
 
 module.exports = router;
