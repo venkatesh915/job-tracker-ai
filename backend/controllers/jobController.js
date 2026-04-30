@@ -1,43 +1,45 @@
 const Job = require("../models/Job");
 
-// ✅ GET ALL JOBS (IMPORTANT: returns array)
-exports.getJobs = async (req, res) => {
-  try {
-    const jobs = await Job.find({ userId: req.user.id }).sort({ createdAt: -1 });
-    res.json(jobs);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ msg: "Server error" });
-  }
-};
-
-// ✅ ADD JOB
+// ADD JOB
 exports.addJob = async (req, res) => {
   try {
-    const { title, company, status } = req.body;
-
-    const job = new Job({
-      title,
-      company,
-      status,
-      userId: req.user.id,
-    });
-
-    await job.save();
-
+    const job = await Job.create(req.body);
     res.status(201).json(job);
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ msg: "Server error" });
+    res.status(500).json({ error: err.message });
   }
 };
 
-// ✅ DELETE JOB
+// GET JOBS
+exports.getJobs = async (req, res) => {
+  try {
+    const jobs = await Job.find().sort({ createdAt: -1 });
+    res.json(jobs);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// UPDATE JOB
+exports.updateJob = async (req, res) => {
+  try {
+    const job = await Job.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    res.json(job);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// DELETE JOB
 exports.deleteJob = async (req, res) => {
   try {
     await Job.findByIdAndDelete(req.params.id);
-    res.json({ msg: "Job deleted" });
+    res.json({ message: "Job deleted" });
   } catch (err) {
-    res.status(500).json({ msg: "Server error" });
+    res.status(500).json({ error: err.message });
   }
 };
